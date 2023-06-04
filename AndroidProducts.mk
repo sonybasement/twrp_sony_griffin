@@ -15,6 +15,6 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/twrp_pdx206.mk \
-    $(LOCAL_DIR)/twrp_pdx203.mk 
+    $(LOCAL_DIR)/twrp_griffin.mk \
+    $(LOCAL_DIR)/twrp_bahamut.mk 
 

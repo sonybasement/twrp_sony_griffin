@@ -3,11 +3,16 @@
 # specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
 
 # mount point	          fstype               device         device2                                flags
-/metadata                  ext4                /dev/block/bootdevice/by-name/metadata                 flags=display="metadata";wrappedkey;backup=1
-/data                      f2fs                /dev/block/bootdevice/by-name/userdata                 flags=fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0,metadata_encryption=aes-256-xts:wrappedkey_v0,keydirectory=/metadata/vold/metadata_encryption
+/metadata                  ext4                /dev/block/bootdevice/by-name/metadata                 flags=display="metadata";backup=1
+/data                      auto                /dev/block/bootdevice/by-name/userdata                 flags=fileencryption=ice,wrappedkey
+
+# Main partition
+/system_root	           ext4	               /dev/block/bootdevice/by-name/system			          flags=slotselect;backup=0
+/system_image	           emmc	               /dev/block/bootdevice/by-name/system		              flags=slotselect
+/vendor		               ext4	               /dev/block/bootdevice/by-name/vendor			          flags=slotselect;display="Vendor";backup=0;wipeingui
+/vendor_image	           emmc	               /dev/block/bootdevice/by-name/vendor		              flags=slotselect
 
 /boot                      emmc                /dev/block/bootdevice/by-name/boot                     flags=display="boot";backup=1;flashimg=1;slotselect
-/recovery                  emmc                /dev/block/bootdevice/by-name/recovery                 flags=display="recovery";backup=1;flashimg=1;slotselect
 /dtbo                      emmc                /dev/block/bootdevice/by-name/dtbo                     flags=display="dtbo";backup=1;flashimg=1;slotselect
 /vbmeta                    emmc                /dev/block/bootdevice/by-name/vbmeta                   flags=display="vbmeta";backup=1;flashimg=1;slotselect
 /vbmeta_system             emmc                /dev/block/bootdevice/by-name/vbmeta_system            flags=display="vbmeta_system";backup=1;flashimg=1;slotselect
@@ -33,4 +38,4 @@
 
 # Removable storage
 /sdcard1                   auto               /dev/block/mmcblk0p1         /dev/block/mmcblk0        flags=fsflags=utf8;display="microsd";storage;wipeingui;removable
-/usbotg                    auto               /dev/block/sdd1              /dev/block/sdd            flags=fsflags=utf8;display="otg";storage;wipeingui;removable
+/usbotg                    auto               /dev/block/sdg1              /dev/block/sdg            flags=fsflags=utf8;display="otg";storage;wipeingui;removable

@@ -20,7 +20,7 @@ TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := kryo
-TARGET_CPU_VARIANT_RUNTIME := kryo585
+TARGET_CPU_VARIANT_RUNTIME := kryo485
 
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := $(TARGET_ARCH_VARIANT)
@@ -33,30 +33,30 @@ ENABLE_CPUSETS := true
 ENABLE_SCHEDBOOST := true
 
 # Bootloader
-PRODUCT_PLATFORM := kona
+PRODUCT_PLATFORM := msmnile
 TARGET_BOOTLOADER_BOARD_NAME := $(PRODUCT_RELEASE_NAME)
 TARGET_NO_BOOTLOADER := true
 TARGET_USES_UEFI := true
 
 # Platform
-TARGET_BOARD_PLATFORM := sony_sm8250
+TARGET_BOARD_PLATFORM := sony_sm8150
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno650
-QCOM_BOARD_PLATFORMS += sony_sm8250
+QCOM_BOARD_PLATFORMS += sony_sm8150
 
 # Kernel
 BOARD_BOOT_HEADER_VERSION := 2
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom \
+BOARD_KERNEL_CMDLINE := \
+    androidboot.hardware=qcom \
     androidboot.memcg=1 \
     lpm_levels.sleep_disabled=1 \
     video=vfb:640x400,bpp=32,memsize=3072000 \
     msm_rtb.filter=0x237 \
-    ervice_locator.enable=1 \
+    service_locator.enable=1 \
     androidboot.usbcontroller=a600000.dwc3 \
-    swiotlb=2048 \
-    loop.max_part=7 \
+    swiotlb=2048 loop.max_part=7 \
     cgroup.memory=nokmem,nosocket \
     reboot=panic_warm \
-    buildid=EDO-1.0.1-201109-1152 \
+    buildid=KUMANO-1.2.0-211005-1847 \
     zram.backend=z3fold \
     androidboot.selinux=permissive
 
@@ -89,20 +89,16 @@ BOARD_INCLUDE_RECOVERY_DTBO := true
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/$(PRODUCT_RELEASE_NAME)/dtbo.img
 
 #A/B
-BOARD_USES_RECOVERY_AS_BOOT := false
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
+BOARD_USES_RECOVERY_AS_BOOT := true
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 AB_OTA_UPDATER := true
 
 AB_OTA_PARTITIONS += \
     boot \
-    dtbo \
-    product \
-    recovery \
     system \
+    vendor \
     vbmeta \
-    vbmeta_system \
-    odm \
-    vendor
+    dtbo 
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
@@ -114,14 +110,14 @@ BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
 
 # Partitions
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x06000000
-
-# Dynamic Partition
-BOARD_SUPER_PARTITION_SIZE := 11811160064
-BOARD_SUPER_PARTITION_GROUPS := somc_dynamic_partitions
-# BOARD_QTI_DYNAMIC_PARTITIONS_SIZ=BOARD_SUPER_PARTITION_SIZE - 4MB
-BOARD_SOMC_DYNAMIC_PARTITIONS_SIZE := 5901385728
-BOARD_SOMC_DYNAMIC_PARTITIONS_PARTITION_LIST := product system vendor odm
+BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 114994094080
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 4362076160
+BOARD_VENDORIMAGE_PARTITION_SIZE := 1073741824
+BOARD_ODMIMAGE_PARTITION_SIZE := 419430400
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 # System as root
 BOARD_ROOT_EXTRA_FOLDERS := bluetooth dsp firmware persist
@@ -136,8 +132,6 @@ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_VENDOR := vendor
 
 #Init
-TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):libinit_sony
-TARGET_RECOVERY_DEVICE_MODULES := libinit_sony
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc/
 
 # Recovery
@@ -156,7 +150,11 @@ VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
 TW_INCLUDE_FBE_METADATA_DECRYPT := true
-TW_USE_FSCRYPT_POLICY := 2
+TW_USE_FSCRYPT_POLICY := 1
+
+# Recovery Installer
+USE_RECOVERY_INSTALLER := true
+RECOVERY_INSTALLER_PATH := $(DEVICE_PATH)/installer
 
 # Network
 BUILD_BROKEN_USES_NETWORK := true
